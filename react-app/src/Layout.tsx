@@ -1,54 +1,113 @@
-import { Link } from '@tanstack/react-router'
-import { Route as indexRoute } from './routes/index'
-import { Route as aboutRoute } from './routes/about'
-import { Route as booksRoute } from './routes/books'
-import { Space, type MenuProps } from 'antd'
-import { BookOutlined, HomeOutlined, InfoOutlined } from '@ant-design/icons'
-import Menu from 'antd/es/menu/menu'
+import { Link, Outlet, useRouterState } from '@tanstack/react-router'
+import {
+  BookOutlined,
+  HomeOutlined,
+  TeamOutlined, // L'icône pour les "Clients"
+  UserOutlined, // L'icône pour les "Auteurs"
+} from '@ant-design/icons'
+import { Layout as AntLayout, Menu, Breadcrumb } from 'antd' 
+import type { MenuProps } from 'antd'
+import React from 'react' 
+
+const { Header, Content, Sider } = AntLayout
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
+
+const menuItems: MenuProps['items'] = [
+  {
+    label: <Link to="/">Accueil</Link>,
+    key: '/', // La clé est le chemin de la route
+    icon: <HomeOutlined />,
+  },
+  {
+   
+    label: <Link to="/clients">Clients</Link>,
+    key: '/clients',
+    icon: <TeamOutlined />,
+  },
+  {
+    label: <Link to="/books">Livres</Link>,
+    key: '/books',
+    icon: <BookOutlined />,
+  },
+  {
+    
+    label: <Link to="/authors">Auteurs</Link>,
+    key: '/authors',
+    icon: <UserOutlined />,
+  },
+]
+
 export function Layout({ children }: LayoutProps) {
-  const items: Required<MenuProps>['items'] = [
-    {
-      label: <Link to={indexRoute.to}>Home</Link>,
-      key: 'home',
-      icon: <HomeOutlined />,
-    },
-    {
-      label: <Link to={booksRoute.to}>Books</Link>,
-      key: 'books',
-      icon: <BookOutlined />,
-    },
-    {
-      label: <Link to={aboutRoute.to}>About</Link>,
-      key: 'about',
-      icon: <InfoOutlined />,
-    },
+  const { location } = useRouterState()
+
+  
+  const pathSnippets = location.pathname.split('/').filter(i => i)
+  const breadcrumbItems = [
+    <Breadcrumb.Item key="home">
+      <Link to="/">Accueil</Link>
+    </Breadcrumb.Item>,
+    ...pathSnippets.map((snippet, index) => {
+      const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
+      // à faire : Améliorer ceci pour afficher les noms 
+      // au lieu des IDs 
+      const title = snippet.charAt(0).toUpperCase() + snippet.slice(1)
+      
+      return (
+        <Breadcrumb.Item key={url}>
+          {/* Le dernier item n'est pas un lien */}
+          {index === pathSnippets.length - 1 ? (
+            title
+          ) : (
+            <Link to={url}>{title}</Link>
+          )}
+        </Breadcrumb.Item>
+      )
+    }),
   ]
+  
 
   return (
-    <Space
-      direction="vertical"
-      style={{
-        width: '100%',
-        height: '100vh',
-      }}
-    >
-      <div
-        style={{
-          textAlign: 'left',
-          width: '100%',
-          backgroundColor: '#395E66',
+    <AntLayout style={{ minHeight: '100vh' }}>
+      {/* Sider: Le menu de navigation vertical */}
+      <Sider collapsible>
+        <div style={{
+          height: 32,
+          margin: 16,
+          background: 'rgba(255, 255, 255, 0.2)',
           color: 'white',
-        }}
-      >
-        <h2 style={{ marginTop: '0' }}>Babel&apos;s Library</h2>
-        <Menu mode="horizontal" items={items} />
-      </div>
-      <div style={{ width: '100%', overflowY: 'scroll' }}>{children}</div>
-    </Space>
+          textAlign: 'center',
+          lineHeight: '32px',
+          borderRadius: 6
+        }}>
+          Biblio M1
+        </div>
+        <Menu
+          theme="dark"
+          mode="inline"
+          items={menuItems}
+          // Fait en sorte que le bon item soit surligné
+          selectedKeys={[location.pathname]} 
+        />
+      </Sider>
+      
+      {/* Layout principal (droite) */}
+      <AntLayout>
+        {/* Header: L'en-tête avec le fil d'Ariane */}
+        <Header style={{ padding: '0 16px', background: '#ffffff' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            {breadcrumbItems}
+          </Breadcrumb>
+        </Header>
+        
+        <Content style={{ margin: '16px', padding: 24, background: '#ffffff' }}>
+          
+          {children}
+        </Content>
+      </AntLayout>
+    </AntLayout>
   )
 }
