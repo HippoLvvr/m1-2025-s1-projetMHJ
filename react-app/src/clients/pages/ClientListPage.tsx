@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-// import { Link, useNavigate } from '@tanstack/react-router' // !! LIGNES TEMPORAIREMENT COMMENTÉES
+//import { Link , useNavigate } from '@tanstack/react-router' 
+import { useNavigate } from '@tanstack/react-router'
 import { Button, Modal, Space, Table, message, Avatar, Image } from 'antd'
 import type { TableProps } from 'antd'
 import { DeleteOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons'
@@ -10,7 +11,7 @@ import { ClientCreateModal } from '../components/ClientCreateModal'
 export function ClientListPage() {
   const { clients, loadClients, deleteClient, createClient } = useClientProvider()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  // const navigate = useNavigate() // !! LIGNE TEMPORAIREMENT COMMENTÉE
+  const navigate = useNavigate() 
 
   // Outil Ant Design pour les popups
   const [messageApi, contextHolder] = message.useMessage()
@@ -128,8 +129,8 @@ export function ClientListPage() {
             const target = e.target as HTMLElement
             // Empêche la navigation si on clique sur un bouton ou un lien dans la ligne
             if (target.closest('button') || target.closest('a')) return
-            // Nous affichons un message au lieu de naviguer
-            messageApi.info(`Clic sur le client ${record.id} (navigation à venir)`)
+            
+            navigate({ to: '/clients/$clientId', params: { clientId: String(record.id) } })
           },
           style: { cursor: 'pointer' }
         })}
