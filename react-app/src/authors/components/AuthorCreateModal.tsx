@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Modal, Form, Input } from 'antd'
-import type { CreateAuthorModel } from '../AuthorModel' // Les types que nous avons créés
+import type { CreateAuthorModel } from '../AuthorModel' 
 
 interface AuthorCreateModalProps {
   isOpen: boolean
   onClose: () => void
-  onCreate: (values: CreateAuthorModel) => Promise<void> // Suit le même modèle que vos autres modales
+  onCreate: (values: CreateAuthorModel) => Promise<void> 
 }
 
 export function AuthorCreateModal({ isOpen, onClose, onCreate }: AuthorCreateModalProps) {
