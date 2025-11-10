@@ -14,9 +14,7 @@ export interface Book {
   
 }
 
-/**
- * NOUVEAU Modèle pour un Client.
- */
+
 export interface Client {
   id: string;
   nom: string;
