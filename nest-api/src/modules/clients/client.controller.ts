@@ -18,7 +18,6 @@ export class ClientController {
 
   @Post()
   create(@Body() data: CreateClientDto) {
-    console.log(data, "data avant");
     return this.clientService.create(data);
   }
 
