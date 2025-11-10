@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { ClientEntity } from './client.entity';
+import { CreateClientDto } from './client.dto';
 
 @Controller('clients')
 export class ClientController {
@@ -17,7 +18,8 @@ export class ClientController {
   }
 
   @Post()
-  create(@Body() data: ClientEntity) {
+  create(@Body() data: CreateClientDto) {
+    console.log(data, "data avant");
     return this.clientService.create(data);
   }
 
