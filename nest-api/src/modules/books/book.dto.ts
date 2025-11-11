@@ -1,5 +1,6 @@
 import { IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
 import type { AuthorId } from '../authors/author.entity';
+import { Type } from 'class-transformer';
 
 export class CreateBookDto {
   @IsString()
@@ -39,11 +40,13 @@ export class UpdateBookDto {
 }
 
 export class GetBooksDto {
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(100)
   limit: number;
 
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   offset: number;

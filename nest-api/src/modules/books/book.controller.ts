@@ -12,7 +12,7 @@ import { CreateBookDto, GetBooksDto, UpdateBookDto } from './book.dto';
 import { GetBooksModel } from './book.model';
 import { BookService } from './book.service';
 
-@Controller('books')
+@Controller('api/books')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
