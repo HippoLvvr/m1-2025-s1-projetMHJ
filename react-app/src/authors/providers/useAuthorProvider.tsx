@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import axios from 'axios'
 import type { AuthorListModel, CreateAuthorModel } from '../AuthorModel'
+import { API_BASE_URL } from '../../api/config.ts'
 
 // L'URL de votre API NestJS pour les auteurs
-const API_URL = 'http://localhost:3000/authors'
+const API_URL = API_BASE_URL + '/authors'
 
 export const useAuthorProvider = () => {
   // Typage explicite du useState
@@ -14,11 +15,8 @@ export const useAuthorProvider = () => {
     axios
       .get(API_URL)
       .then(response => {
-        // Le backend renvoie les auteurs avec la relation 'books'
-        // Nous pouvons calculer le 'booksWrittenCount' ici
         const authorsWithCount = response.data.map((author: any) => ({
           ...author,
-          // Le PDF demande le nombre de livres écrits
           booksWrittenCount: author.books?.length || 0,
         }))
         setAuthors(authorsWithCount)

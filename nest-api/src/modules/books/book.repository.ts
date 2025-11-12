@@ -94,4 +94,19 @@ export class BookRepository {
       );
     });
   }
+
+  public async getBooksByAuthorId(authorId: string): Promise<BookModel[]> {
+    const author = await this.authorRepository.findOne({
+      where: { id: authorId as unknown as AuthorEntity['id'] },
+    });
+
+    if (!author) {
+      throw new Error('Author not found');
+    }
+
+    return await this.bookRepository.find({
+      where: { authorId: authorId as unknown as BookEntity['authorId'] },
+      relations: { author: true },
+    });
+  }
 }

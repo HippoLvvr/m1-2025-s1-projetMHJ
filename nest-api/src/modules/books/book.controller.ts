@@ -40,6 +40,11 @@ export class BookController {
     return this.bookService.getBookById(id);
   }
 
+  @Get('author/:authorId')
+  public async getBooksByAuthor(@Param('authorId') authorId: string) {
+    return this.bookService.getBooksByAuthorId(authorId);
+  }
+
   @Post()
   createBook(@Body() createBookDto: CreateBookDto) {
     return this.bookService.createBook(createBookDto);
