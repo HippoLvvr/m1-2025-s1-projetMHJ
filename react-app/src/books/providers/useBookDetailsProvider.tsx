@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import type { BookModel } from '../BookModel'
+import { API_BASE_URL } from '../../api/config.ts'
+
+const API_URL = API_BASE_URL + '/books'
 
 export const useBookDetailsProvider = (id: string) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -7,7 +10,7 @@ export const useBookDetailsProvider = (id: string) => {
 
   const loadBook = () => {
     setIsLoading(true)
-    fetch(`http://localhost:3000/books/${id}`)
+    fetch(`${API_URL}/${id}`)
       .then(response => response.json())
       .then(data => setBook(data))
       .finally(() => setIsLoading(false))
