@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body } from '@nestjs/common';
 import { SaleService } from './sale.service';
 import {CreateSaleDto } from './sale.dto';
 
-@Controller('sales')
+@Controller('api/sales')
 export class SaleController {
   constructor(private readonly saleService: SaleService) {}
 

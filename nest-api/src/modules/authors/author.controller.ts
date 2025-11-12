@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { CreateAuthorDto } from './author.dto';
 
-@Controller('authors')
+@Controller('api/authors')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
