@@ -26,16 +26,20 @@ export const useAuthorProvider = () => {
 
   // Créer un nouvel auteur
   const createAuthor = (author: CreateAuthorModel) => {
-    return axios // On retourne la promesse pour la modale
-      .post(API_URL, author)
+    const { photo, ...rest } = author
+    const authorPayload = { ...rest, photoUrl: photo }
+
+    return axios
+      .post(API_URL, authorPayload)
       .then(() => {
-        loadAuthors() // Recharge la liste après la création
+        loadAuthors()
       })
       .catch(err => {
-        console.error('Erreur lors de la création de l\'auteur:', err)
-        throw err // Renvoie l'erreur pour la modale
+        console.error("Erreur lors de la création de l'auteur:", err)
+        throw err
       })
   }
+
 
   // Supprimer un auteur
   const deleteAuthor = (id: string) => {
