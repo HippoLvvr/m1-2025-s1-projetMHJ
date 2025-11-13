@@ -1,18 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { SaleEntity } from './sale.entity';
+import { Repository, DataSource } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SaleEntity } from './sale.entity';
 import { CreateSaleDto } from './sale.dto';
 import { ClientEntity } from '../clients/client.entity';
 import { BookEntity, BookId } from '../books/entities/book.entity';
-import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SaleRepository {
   constructor(
     @InjectRepository(SaleEntity)
     private readonly repo: Repository<SaleEntity>,
-    // optionnel : pour charger client/book si nécessaire
     private readonly dataSource: DataSource,
   ) {}
 
@@ -21,7 +19,6 @@ export class SaleRepository {
   }
 
   async create(dto: CreateSaleDto) {
-    // Récupère les entités Client et Book via manager
     const manager = this.dataSource.manager;
     const client = await manager.findOne(ClientEntity, { where: { id: dto.clientId } });
     const book = await manager.findOne(BookEntity, { where: { id: dto.bookId as BookId } });
@@ -36,5 +33,24 @@ export class SaleRepository {
     } as Partial<SaleEntity>);
 
     return this.repo.save(sale);
+  }
+
+  async findClientsByBookId(bookId: BookId): Promise<ClientEntity[]> {
+    const sales = await this.repo.find({
+      where: { book: { id: bookId } },
+      relations: ['client', 'book'],
+    });
+
+    if (sales.length === 0) {
+      throw new NotFoundException(`Aucune vente trouvée pour le livre avec l'id ${bookId}`);
+    }
+
+    // Supprimer les doublons éventuels si un client a acheté plusieurs fois le même livre
+    const clientsMap = new Map<number, ClientEntity>();
+    for (const sale of sales) {
+      clientsMap.set(sale.client.id, sale.client);
+    }
+
+    return Array.from(clientsMap.values());
   }
 }
