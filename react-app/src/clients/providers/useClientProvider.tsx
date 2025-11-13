@@ -4,10 +4,11 @@ import type {
   ClientListModel,
   CreateClientModel,
   UpdateClientModel,
-} from '../ClientModel' // Le fichier qu'on viens de créer
+} from '../ClientModel'
+import { API_BASE_URL } from '../../api/config.ts' // Le fichier que vous venez de créer
 
-// L'URL l'API NestJS pour les clients
-const API_URL = 'http://localhost:3000/clients'
+// L'URL de votre API NestJS pour les clients
+const API_URL = API_BASE_URL + '/clients'
 
 export const useClientProvider = () => {
   // Typage explicite du useState
@@ -19,10 +20,10 @@ export const useClientProvider = () => {
       .get(API_URL)
       .then(response => {
         // Le backend renvoie les clients avec la relation 'sales'
-        // on peut calculer le nombre de livres achetés ici, comme demandé
+        // Nous pouvons calculer le nombre de livres achetés ici, comme demandé
         const clientsWithCount = response.data.map((client: any) => ({
           ...client,
-          
+          // Le PDF demande le nombre de livres achetés
           booksPurchasedCount: client.sales?.length || 0,
         }))
         setClients(clientsWithCount)

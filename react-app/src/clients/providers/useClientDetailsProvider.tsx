@@ -1,18 +1,18 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import axios from 'axios'
 import type { ClientDetailsModel } from '../ClientModel'
+import { API_BASE_URL } from '../../api/config.ts'
 
-const API_URL = 'http://localhost:3000/clients'
+const API_URL = API_BASE_URL + '/clients'
 
 export const useClientDetailsProvider = (clientId: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [client, setClient] = useState<ClientDetailsModel | null>(null)
 
-  // La fonction loadClient est exportée, pour être appelée par le composant
-  const loadClient = () => {
+  const loadClient = useCallback(() => {
     setIsLoading(true)
     axios
-      .get(`${API_URL}/${clientId}`) // Utilise l'ID
+      .get(`${API_URL}/${clientId}`)
       .then(response => {
         setClient(response.data)
       })
@@ -21,11 +21,10 @@ export const useClientDetailsProvider = (clientId: string) => {
         setClient(null)
       })
       .finally(() => {
+        console.log('client loaded')
         setIsLoading(false)
       })
-  }
+  }, [clientId])
 
-  // Il n'y a PAS de useEffect ici, pour suivre le pattern
-  
   return { isLoading, client, loadClient }
 }

@@ -13,41 +13,35 @@ import {
 import { UserOutlined } from '@ant-design/icons'
 import type { TableProps } from 'antd'
 import { useClientDetailsProvider } from '../providers/useClientDetailsProvider'
-import type { Sale } from '../ClientModel' 
+import type { Sale } from '../ClientModel'
 
 const { Title, Paragraph } = Typography
 
 export function ClientDetailPage() {
-  // on récup l'id du client depuis l'URL
+  // On récupère l'id du client depuis l'URL
   const { clientId } = useParams({ from: '/clients/$clientId' })
-  
-  // on utilise details pour charger les données
+
+  // On charge les données depuis le provider
   const { isLoading, client, loadClient } = useClientDetailsProvider(clientId)
 
-  //Outil pour les message
   const [messageApi, contextHolder] = message.useMessage()
 
-  // si l'ID change
   useEffect(() => {
     loadClient()
   }, [clientId, loadClient])
 
-  
   const handleEdit = (field: string, value: string) => {
-    // à faire : Implémenter la logique d'update
-    // Il faudra appeler une fonction "updateClient" du provider
     console.log('Mise à jour (à implémenter):', { [field]: value })
     messageApi.success('Modification enregistrée (simulation)')
   }
 
-  //Colonnes pour la liste des livres achetés
+  // Colonnes du tableau des ventes
   const columns: TableProps<Sale>['columns'] = [
     {
       title: 'Livre',
-      dataIndex: ['book', 'title'], // Accède à sale.book.title
+      dataIndex: ['book', 'title'],
       key: 'bookTitle',
       render: (text: string, record: Sale) => (
-        // Lien vers la page du livre
         <Link to="/books/$bookId" params={{ bookId: String(record.book.id) }}>
           {text}
         </Link>
@@ -55,10 +49,16 @@ export function ClientDetailPage() {
     },
     {
       title: 'Auteur',
-      dataIndex: ['book', 'author'], // Accède à sale.book.author
-      key: 'authorName',
-      render: (author: Sale['book']['author']) =>
-        `${author.firstName} ${author.lastName}`,
+      dataIndex: ['book', 'authorId'],
+      key: 'authorId',
+      render: (authorId?: string) =>
+        authorId ? (
+          <Link to="/authors/$authorId" params={{ authorId }}>
+            Voir l’auteur
+          </Link>
+        ) : (
+          'N/A'
+        ),
     },
     {
       title: "Date d'achat",
@@ -68,17 +68,14 @@ export function ClientDetailPage() {
     },
   ]
 
-  // Affiche un squelette pendant le chargement
   if (isLoading) {
     return <Skeleton active avatar paragraph={{ rows: 4 }} />
   }
 
-  // Affiche un message si le client n'est pas trouvé
   if (!client) {
     return <Title level={3}>Client non trouvé.</Title>
   }
 
-  // Affiche les détails du client
   return (
     <>
       {contextHolder}
@@ -87,8 +84,12 @@ export function ClientDetailPage() {
           avatar={
             <Avatar
               size={64}
-              src={client.photoUrl ? <Image src={client.photoUrl} preview={false} /> : null}
-              icon={!client.photoUrl ? <UserOutlined /> : null}
+              src={
+                client.photoUrl ? (
+                  <Image src={client.photoUrl} preview={false} />
+                ) : undefined
+              }
+              icon={!client.photoUrl ? <UserOutlined /> : undefined}
             />
           }
           title={`${client.firstName} ${client.lastName}`}
@@ -124,7 +125,7 @@ export function ClientDetailPage() {
       </Title>
       <Table
         columns={columns}
-        dataSource={client.sales} // Utilise les données de vente
+        dataSource={client.sales}
         rowKey="id"
         pagination={false}
       />
