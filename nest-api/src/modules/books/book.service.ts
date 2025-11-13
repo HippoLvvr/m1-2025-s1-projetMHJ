@@ -25,6 +25,10 @@ export class BookService {
     return this.bookRepository.createBook(book);
   }
 
+  public async getBookCount(): Promise<number> {
+    return this.bookRepository.getBookCount();
+  }
+
   public async updateBook(
     id: string,
     book: UpdateBookModel,

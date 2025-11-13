@@ -35,6 +35,11 @@ export class BookController {
     };
   }
 
+  @Get('/count')
+  public async getBookCount() {
+    return this.bookService.getBookCount();
+  }
+
   @Get(':id')
   public async getBook(@Param('id') id: string) {
     return this.bookService.getBookById(id);

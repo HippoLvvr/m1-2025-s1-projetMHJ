@@ -33,6 +33,10 @@ export class BookRepository {
     return [books, totalCount];
   }
 
+  public async getBookCount(): Promise<number> {
+    return this.bookRepository.count();
+  }
+
   public async getBookById(id: string): Promise<BookModel | undefined> {
     const book = await this.bookRepository.findOne({
       where: { id: id as BookId },
