@@ -1,9 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router'
-
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 export const Route = createFileRoute('/clients')({
-  component: RouteComponent,
+  component: ClientsLayout,
 })
 
-function RouteComponent() {
-  return <div>Hello "/clients"!</div>
+function ClientsLayout() {
+  return (
+    <div>
+      {/* Les pages /clients/ (liste) et /clients/$clientId (détail) 
+          s'afficheront ici, à l'intérieur du <Outlet /> */}
+      <Outlet />
+    </div>
+  )
 }
