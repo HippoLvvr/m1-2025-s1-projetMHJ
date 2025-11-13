@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Card, Col, Row, Statistic, Typography, Space, Divider } from 'antd'
 import { 
   ReadOutlined, 
@@ -7,16 +8,34 @@ import {
   ArrowRightOutlined 
 } from '@ant-design/icons'
 import { Link } from '@tanstack/react-router'
+import axios from 'axios'
+import { API_BASE_URL } from './api/config'
 
 const { Title, Paragraph } = Typography
 
 function App() {
-  // Données simulées pour l'aperçu du tableau de bord
+
+  // État uniquement pour le nombre de livres (les autres sont statiques pour le moment)
+  const [bookCount, setBookCount] = useState<number>(0)
+
+  useEffect(() => {
+    // Appel l'endpoint spécifique pour les livres
+    axios.get(`${API_BASE_URL}/books/count`)
+      .then(response => {
+        // On s'assure de récupérer un nombre
+        const count = typeof response.data === 'number' ? response.data : response.data.count
+        setBookCount(Number(count))
+      })
+      .catch(error => {
+        console.error("Erreur lors du chargement du nombre de livres :", error)
+      })
+  }, [])
+  
   
   const stats = [
     {
       title: 'Livres en rayon',
-      value: 124, // Exemple
+      value: bookCount,
       icon: <ReadOutlined style={{ color: '#1890ff', fontSize: '24px' }} />,
       link: '/books',
       linkText: 'Gérer les livres',
