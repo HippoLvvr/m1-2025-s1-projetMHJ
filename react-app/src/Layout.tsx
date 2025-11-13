@@ -4,6 +4,7 @@ import {
   HomeOutlined,
   TeamOutlined, // L'icône pour les "Clients"
   UserOutlined, // L'icône pour les "Auteurs"
+  ShoppingOutlined, // L'icône pour les "Ventes"
 } from '@ant-design/icons'
 import { Layout as AntLayout, Menu, Breadcrumb } from 'antd' 
 import type { MenuProps } from 'antd'
@@ -38,6 +39,12 @@ const menuItems: MenuProps['items'] = [
     label: <Link to="/authors">Auteurs</Link>,
     key: '/authors',
     icon: <UserOutlined />,
+  },
+  
+  {
+  label: <Link to="/sales">Ventes</Link>,
+  key: '/sales',
+  icon: <ShoppingOutlined />,
   },
 ]
 
