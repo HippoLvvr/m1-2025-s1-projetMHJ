@@ -12,7 +12,7 @@ import { CreateBookDto, GetBooksDto, UpdateBookDto } from './book.dto';
 import { GetBooksModel } from './book.model';
 import { BookService } from './book.service';
 
-@Controller('books')
+@Controller('api/books')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
@@ -38,6 +38,11 @@ export class BookController {
   @Get(':id')
   public async getBook(@Param('id') id: string) {
     return this.bookService.getBookById(id);
+  }
+
+  @Get('author/:authorId')
+  public async getBooksByAuthor(@Param('authorId') authorId: string) {
+    return this.bookService.getBooksByAuthorId(authorId);
   }
 
   @Post()

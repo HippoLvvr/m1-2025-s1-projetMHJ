@@ -1,22 +1,37 @@
 import { useState } from 'react'
 import type { BookModel, CreateBookModel, UpdateBookModel } from '../BookModel'
 import axios from 'axios'
+import { API_BASE_URL } from '../../api/config.ts'
+
+const API_URL = API_BASE_URL + '/books'
 
 export const useBookProvider = () => {
   const [books, setBooks] = useState<BookModel[]>([])
 
-  const loadBooks = () => {
+  const loadBooks = (params: { limit?: number; offset?: number; search?: string } = {}) => {
+    const {
+      limit = 5,
+      offset = 0,
+      search = '',
+    } = params
+
+    const queryParams = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+      ...(search ? { search } : {}),
+    })
+
     axios
-      .get('http://localhost:3000/books')
-      .then(data => {
-        setBooks(data.data.data)
+      .get(`${API_URL}?${queryParams}`)
+      .then(res => {
+        setBooks(res.data.data)
       })
       .catch(err => console.error(err))
   }
 
   const createBook = (book: CreateBookModel) => {
     axios
-      .post('http://localhost:3000/books', book)
+      .post(API_URL, book)
       .then(() => {
         loadBooks()
       })
@@ -25,7 +40,7 @@ export const useBookProvider = () => {
 
   const updateBook = (id: string, input: UpdateBookModel) => {
     axios
-      .patch(`http://localhost:3000/books/${id}`, input)
+      .patch(`${API_URL}/${id}`, input)
       .then(() => {
         loadBooks()
       })
@@ -34,7 +49,7 @@ export const useBookProvider = () => {
 
   const deleteBook = (id: string) => {
     axios
-      .delete(`http://localhost:3000/books/${id}`)
+      .delete(`${API_URL}/${id}`)
       .then(() => {
         loadBooks()
       })

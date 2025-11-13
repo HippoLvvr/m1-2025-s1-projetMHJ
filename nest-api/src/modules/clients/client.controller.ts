@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ClientService } from './client.service';
-import { ClientEntity } from './client.entity';
+import { CreateClientDto, UpdateClientDto } from './client.dto';
 
-@Controller('clients')
+@Controller('api/clients')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
@@ -17,12 +17,12 @@ export class ClientController {
   }
 
   @Post()
-  create(@Body() data: ClientEntity) {
+  create(@Body() data: CreateClientDto) {
     return this.clientService.create(data);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<ClientEntity>) {
+  update(@Param('id') id: string, @Body() data: UpdateClientDto) {
     return this.clientService.update(+id, data);
   }
 
