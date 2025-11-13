@@ -25,7 +25,6 @@ export interface Client {
 
 
 export interface Sale {
-  id: string;
   book: Book;
   client: Client;
   date: string; // Date de l'achat (format ISO)

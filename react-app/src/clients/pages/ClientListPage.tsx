@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-//import { Link , useNavigate } from '@tanstack/react-router' 
 import { useNavigate } from '@tanstack/react-router'
 import { Button, Modal, Space, Table, message, Avatar, Image } from 'antd'
 import type { TableProps } from 'antd'
