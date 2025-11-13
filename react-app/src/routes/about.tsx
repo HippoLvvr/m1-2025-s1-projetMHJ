@@ -5,5 +5,13 @@ export const Route = createFileRoute('/about')({
 })
 
 function About() {
-  return <div>Hello from About!</div>
+  return <div>Project by
+    <ul>
+      <li>Hippolyte LEVIVIER</li>
+      <li>Nils LESAGE</li>
+      <li>Mathis RUCHOT</li>
+      <li>Théo MEILLIEZ</li>
+      <li>Jeremy SICARD</li>
+    </ul>
+  </div>
 }
