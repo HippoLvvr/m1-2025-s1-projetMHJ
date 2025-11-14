@@ -8,13 +8,13 @@ interface SaleCreateModalProps {
   isOpen: boolean
   onClose: () => void
   onCreate: (values: CreateSaleModel) => Promise<void>
+  preselectedBookId?: string 
 }
 
-export function SaleCreateModal({ isOpen, onClose, onCreate }: SaleCreateModalProps) {
+export function SaleCreateModal({ isOpen, onClose, onCreate, preselectedBookId }: SaleCreateModalProps) {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
   
-  // États locaux pour les options des Select
   const [clients, setClients] = useState<{ label: string; value: number }[]>([])
   const [books, setBooks] = useState<{ label: string; value: string }[]>([])
 
@@ -22,7 +22,12 @@ export function SaleCreateModal({ isOpen, onClose, onCreate }: SaleCreateModalPr
     if (isOpen) {
       form.resetFields()
       
-      // Charger les clients pour le Select
+      // Si un livre est présélectionné, on maj du formulaire
+      if (preselectedBookId) {
+        form.setFieldValue('bookId', preselectedBookId)
+      }
+      
+      // Charger les clients
       axios.get(`${API_BASE_URL}/clients`).then(res => {
         setClients(res.data.map((c: any) => ({
           label: `${c.firstName} ${c.lastName}`,
@@ -30,8 +35,10 @@ export function SaleCreateModal({ isOpen, onClose, onCreate }: SaleCreateModalPr
         })))
       }).catch(e => console.error("Erreur chargement clients", e))
 
-      // Charger les livres pour le Select
-      axios.get(`${API_BASE_URL}/books`).then(res => {
+      // Charger les livres avec une limite de 100
+      axios.get(`${API_BASE_URL}/books`, {
+        params: { limit: 100 } 
+      }).then(res => {
         const booksData = Array.isArray(res.data) ? res.data : (res.data.data || [])
         setBooks(booksData.map((b: any) => ({
           label: b.title,
@@ -39,7 +46,7 @@ export function SaleCreateModal({ isOpen, onClose, onCreate }: SaleCreateModalPr
         })))
       }).catch(e => console.error("Erreur chargement livres", e))
     }
-  }, [isOpen, form])
+  }, [isOpen, form, preselectedBookId])
 
   const handleOk = async () => {
     try {
@@ -57,7 +64,6 @@ export function SaleCreateModal({ isOpen, onClose, onCreate }: SaleCreateModalPr
       onClose()
     } catch (error) {
       console.error(error)
-      // message.error géré par l'appelant ou ici si besoin
     } finally {
       setLoading(false)
     }
@@ -97,6 +103,7 @@ export function SaleCreateModal({ isOpen, onClose, onCreate }: SaleCreateModalPr
             placeholder="Sélectionner un livre"
             optionFilterProp="label"
             options={books}
+            disabled={!!preselectedBookId} // On désactive le choix si le livre est pré-sélectionné
           />
         </Form.Item>
 
